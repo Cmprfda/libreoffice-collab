@@ -15,7 +15,7 @@ use serde::Deserialize;
 /// │ CHANGE THESE WHEN YOU FORK THE PROJECT — they must match src/lib/config │
 /// │ .ts, tauri.conf.json and the installer scripts.                        │
 /// └────────────────────────────────────────────────────────────────────────┘
-pub const OWNER: &str = "your-org";
+pub const OWNER: &str = "Cmprfda";
 pub const REPO: &str = "libreoffice-collab";
 
 /// Only the fields we actually use; GitHub sends a lot more.

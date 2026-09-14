@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "Edicao colaborativa em tempo real de documentos LibreOffice na rede local"
 authors = ["LibreOffice Collab contributors"]
 license = "MIT"
-repository = "https://github.com/your-org/libreoffice-collab"
+repository = "https://github.com/Cmprfda/libreoffice-collab"
 edition = "2021"
 rust-version = "1.77"
 

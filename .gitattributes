@@ -1,0 +1,16 @@
+# Normalise line endings so a Windows checkout never rewrites whole files.
+# Everything is stored as LF in the repository.
+* text=auto eol=lf
+
+# These two are executed by Windows itself, so they are checked out with CRLF.
+# cmd.exe in particular can mis-parse an LF-only batch file in edge cases
+# (labels and multi-line blocks), and it costs nothing to be safe here.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Never touch binaries.
+*.png binary
+*.ico binary
+*.icns binary
+*.exe binary

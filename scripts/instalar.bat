@@ -18,7 +18,7 @@ REM ============================================================================
 setlocal EnableExtensions EnableDelayedExpansion
 
 REM --- ALTERE ESTES VALORES SE FIZER FORK / CHANGE THESE IF YOU FORK ---------
-set "OWNER=your-org"
+set "OWNER=Cmprfda"
 set "REPO=libreoffice-collab"
 REM --------------------------------------------------------------------------
 

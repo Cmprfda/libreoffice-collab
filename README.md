@@ -41,7 +41,7 @@ Depois disso, toda a gente abre a aplicação e clica num documento. Mais nada.
 
 ### Opção A — o mais simples
 
-1. Vá a **[Releases](https://github.com/your-org/libreoffice-collab/releases/latest)**.
+1. Vá a **[Releases](https://github.com/Cmprfda/libreoffice-collab/releases/latest)**.
 2. Descarregue o ficheiro **`instalar.bat`**.
 3. **Faça duplo clique** nele.
 4. Espere. A aplicação instala-se sozinha e abre no fim.
@@ -55,7 +55,7 @@ Depois disso, toda a gente abre a aplicação e clica num documento. Mais nada.
 Se preferir, abra o **PowerShell** e cole isto:
 
 ```powershell
-irm https://raw.githubusercontent.com/your-org/libreoffice-collab/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/Cmprfda/libreoffice-collab/main/scripts/install.ps1 | iex
 ```
 
 ### O que o instalador faz
@@ -75,7 +75,7 @@ ficheiros. Escolha um que esteja normalmente ligado.
 1. Instale o **[Docker Desktop](https://www.docker.com/products/docker-desktop/)**
    e abra-o (espere que o ícone fique verde).
 2. Descarregue o **`instalar-servidor.bat`** das
-   [Releases](https://github.com/your-org/libreoffice-collab/releases/latest).
+   [Releases](https://github.com/Cmprfda/libreoffice-collab/releases/latest).
 3. Faça duplo clique. Diga **Sim** quando o Windows pedir permissões.
 
 O script trata de tudo:
@@ -176,7 +176,7 @@ leaving the building.
 
 ### Option A — the simple way
 
-1. Go to **[Releases](https://github.com/your-org/libreoffice-collab/releases/latest)**.
+1. Go to **[Releases](https://github.com/Cmprfda/libreoffice-collab/releases/latest)**.
 2. Download **`instalar.bat`**.
 3. **Double-click** it.
 4. Wait. The app installs itself and opens when it is done.
@@ -188,7 +188,7 @@ leaving the building.
 ### Option B — one line in PowerShell
 
 ```powershell
-irm https://raw.githubusercontent.com/your-org/libreoffice-collab/main/scripts/install.ps1 | iex
+irm https://raw.githubusercontent.com/Cmprfda/libreoffice-collab/main/scripts/install.ps1 | iex
 ```
 
 The installer downloads the latest release, installs into
@@ -205,7 +205,7 @@ Pick one that is normally switched on.
 1. Install **[Docker Desktop](https://www.docker.com/products/docker-desktop/)**
    and start it (wait for the icon to turn green).
 2. Download **`instalar-servidor.bat`** from the
-   [Releases](https://github.com/your-org/libreoffice-collab/releases/latest) page.
+   [Releases](https://github.com/Cmprfda/libreoffice-collab/releases/latest) page.
 3. Double-click it and accept the administrator prompt.
 
 The script downloads the server, starts the Collabora engine, opens the required
@@ -325,7 +325,7 @@ docker compose -f docker/docker-compose.yml up -d   # needs HOST_IP in docker/.e
 
 ## Before your first release
 
-1. **Point the project at your repository.** Replace `your-org/libreoffice-collab`
+1. **Point the project at your repository.** Replace `Cmprfda/libreoffice-collab`
    in: `src/lib/config.ts`, `src-tauri/src/github.rs`, `src-tauri/tauri.conf.json`
    (updater endpoint), `scripts/instalar.bat`, `scripts/install.ps1`,
    `scripts/instalar-servidor.bat`, `scripts/host-setup.ps1`.

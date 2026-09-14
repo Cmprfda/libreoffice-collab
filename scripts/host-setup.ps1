@@ -16,7 +16,7 @@
 
 [CmdletBinding()]
 param(
-    [string]$Owner    = 'your-org',
+    [string]$Owner    = 'Cmprfda',
     [string]$Repo     = 'libreoffice-collab',
     # Pasta partilhada / shared folder
     [string]$DocsDir  = (Join-Path $env:PUBLIC 'Documentos Partilhados'),

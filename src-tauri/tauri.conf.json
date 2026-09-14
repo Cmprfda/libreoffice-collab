@@ -70,7 +70,7 @@
       "dialog": false,
       "pubkey": "REPLACE_WITH_OUTPUT_OF__npm_run_tauri_signer_generate",
       "endpoints": [
-        "https://github.com/your-org/libreoffice-collab/releases/latest/download/latest.json"
+        "https://github.com/Cmprfda/libreoffice-collab/releases/latest/download/latest.json"
       ],
       "windows": {
         "installMode": "passive"

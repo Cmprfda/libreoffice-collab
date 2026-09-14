@@ -12,7 +12,7 @@ REM ============================================================================
 
 setlocal EnableExtensions
 
-set "OWNER=your-org"
+set "OWNER=Cmprfda"
 set "REPO=libreoffice-collab"
 
 REM --- Eleva para administrador se ainda nao estiver / self-elevate ----------

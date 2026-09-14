@@ -9,7 +9,7 @@
  * │   - scripts/install.ps1        ($Owner / $Repo)                          │
  * └──────────────────────────────────────────────────────────────────────────┘
  */
-export const GITHUB_OWNER = "your-org";
+export const GITHUB_OWNER = "Cmprfda";
 export const GITHUB_REPO = "libreoffice-collab";
 
 export const GITHUB_REPO_URL = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}`;

@@ -7,7 +7,7 @@
         %LocalAppData%\Programs, creates shortcuts and launches the app.
 
     Uso / Usage:
-        irm https://raw.githubusercontent.com/your-org/libreoffice-collab/main/scripts/install.ps1 | iex
+        irm https://raw.githubusercontent.com/Cmprfda/libreoffice-collab/main/scripts/install.ps1 | iex
 
     Nao requer permissoes de administrador. / No administrator rights required.
 #>
@@ -15,7 +15,7 @@
 [CmdletBinding()]
 param(
     # CHANGE THESE WHEN YOU FORK THE PROJECT (see src/lib/config.ts).
-    [string]$Owner = 'your-org',
+    [string]$Owner = 'Cmprfda',
     [string]$Repo  = 'libreoffice-collab',
     # Optional: install a specific tag instead of the latest release.
     [string]$Tag   = ''
