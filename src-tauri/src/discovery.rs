@@ -53,7 +53,7 @@ impl Discovery {
             .lock()
             .map(|guard| guard.values().cloned().collect())
             .unwrap_or_default();
-        list.sort_by(|a, b| a.name.to_lowercase().cmp(&b.name.to_lowercase()));
+        list.sort_by_key(|server| server.name.to_lowercase());
         list
     }
 

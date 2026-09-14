@@ -117,7 +117,8 @@ pub fn list(dir: &Path) -> Vec<DocumentDto> {
         })
         .collect();
 
-    documents.sort_by(|a, b| b.modified.cmp(&a.modified));
+    // Newest first.
+    documents.sort_by_key(|document| std::cmp::Reverse(document.modified));
     documents
 }
 
