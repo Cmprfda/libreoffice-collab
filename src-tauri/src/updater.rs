@@ -109,9 +109,8 @@ pub async fn install(app: &AppHandle) -> anyhow::Result<()> {
         .download_and_install(
             move |chunk_length, content_length| {
                 let total = content_length.unwrap_or(0);
-                let so_far =
-                    progress_counter.fetch_add(chunk_length as u64, Ordering::Relaxed)
-                        + chunk_length as u64;
+                let so_far = progress_counter.fetch_add(chunk_length as u64, Ordering::Relaxed)
+                    + chunk_length as u64;
                 let percent = if total > 0 {
                     (so_far as f64 / total as f64) * 100.0
                 } else {

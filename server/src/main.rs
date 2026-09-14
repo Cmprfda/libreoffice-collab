@@ -87,7 +87,10 @@ async fn main() -> anyhow::Result<()> {
 
 fn banner(config: &Config) {
     println!("=====================================================");
-    println!(" LibreOffice Collab — Servidor / Server v{}", env!("CARGO_PKG_VERSION"));
+    println!(
+        " LibreOffice Collab — Servidor / Server v{}",
+        env!("CARGO_PKG_VERSION")
+    );
     println!("=====================================================");
     println!(" Nome / Name        : {}", mdns::describe(config));
     println!(" Pasta / Folder     : {}", config.docs_dir.display());

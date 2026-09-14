@@ -101,7 +101,10 @@ pub async fn get_file(
         StatusCode::OK,
         [
             (header::CONTENT_TYPE, "application/octet-stream".to_string()),
-            (header::HeaderName::from_static("x-wopi-itemversion"), version),
+            (
+                header::HeaderName::from_static("x-wopi-itemversion"),
+                version,
+            ),
         ],
         bytes,
     )
@@ -133,7 +136,10 @@ pub async fn put_file(
         .or_else(|| headers.get("x-cool-wopi-timestamp"))
         .and_then(|value| value.to_str().ok())
         .unwrap_or("autosave");
-    println!("[wopi] saved {name} ({} bytes) by {user} [{reason}]", body.len());
+    println!(
+        "[wopi] saved {name} ({} bytes) by {user} [{reason}]",
+        body.len()
+    );
 
     Ok((
         StatusCode::OK,
