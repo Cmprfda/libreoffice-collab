@@ -16,3 +16,9 @@ src-tauri/gen/
 .env
 .env.local
 *.local
+
+# Chaves de assinatura - nunca devem entrar no repositorio.
+# Signing keys - must never be committed.
+*.key
+*.key.password
+*.pem

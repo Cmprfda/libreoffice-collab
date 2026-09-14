@@ -68,7 +68,7 @@
     "updater": {
       "active": true,
       "dialog": false,
-      "pubkey": "REPLACE_WITH_OUTPUT_OF__npm_run_tauri_signer_generate",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDdDRjhGNTdBMDBDMTA2MzEKUldReEJzRUFldlg0ZkhUblUrMW5IWkZaRE92OUtvODNpQ2dxUTQ3NFNLNlJNY1Foc3J1a0pvdlgK",
       "endpoints": [
         "https://github.com/Cmprfda/libreoffice-collab/releases/latest/download/latest.json"
       ],
