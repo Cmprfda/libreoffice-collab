@@ -31,11 +31,15 @@ pub fn advertise(config: &Config) -> anyhow::Result<ServiceDaemon> {
     let instance = sanitise_instance(&config.name);
     let host_name = format!("{}.local.", sanitise_instance(&config.name).to_lowercase());
 
+    // `AsIpAddrs` is not implemented for `Ipv4Addr`; the textual form is the
+    // shape mdns-sd documents (it also accepts a comma-separated list).
+    let address = config.public_ip.to_string();
+
     let service = ServiceInfo::new(
         SERVICE_TYPE,
         &instance,
         &host_name,
-        config.public_ip,
+        address.as_str(),
         config.port,
         properties,
     )?;
