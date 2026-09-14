@@ -1,0 +1,39 @@
+# Collabora Online Development Edition — the co-authoring engine.
+#
+# This is the component that removes the LibreOffice desktop file lock: CODE
+# opens each document once, in the container, and streams the shared view to
+# every participant. `collab-server.exe` sits next to it as the WOPI host.
+#
+# Started for you by scripts/instalar-servidor.bat — you should not need to run
+# docker commands by hand.
+
+services:
+  collabora:
+    image: collabora/code:24.04.9.1.1
+    container_name: libreoffice-collab-code
+    restart: unless-stopped
+    ports:
+      - "9980:9980"
+    environment:
+      # Admin console at http://<host>:9980/browser/dist/admin/admin.html
+      - username=admin
+      - password=${COOL_ADMIN_PASSWORD:-collab}
+
+      # Which WOPI hosts CODE is allowed to fetch documents from. This must
+      # match the address collab-server advertises, or every document opens
+      # with "Access denied".
+      - aliasgroup1=http://${HOST_IP}:${COLLAB_PORT:-7373}
+
+      # LAN deployment notes:
+      #   ssl.enable=false        we serve plain HTTP inside the office network
+      #   ssl.termination=false   there is no reverse proxy in front of us
+      #   net.frame_ancestors     lets the client WebView host the editor
+      - extra_params=--o:ssl.enable=false --o:ssl.termination=false --o:net.frame_ancestors=* --o:user_interface.mode=notebookbar
+    cap_add:
+      - MKNOD
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9980/hosting/discovery"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s

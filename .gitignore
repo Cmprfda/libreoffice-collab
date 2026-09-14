@@ -1,0 +1,18 @@
+# Node
+node_modules/
+dist/
+.dist/
+*.log
+
+# Rust
+target/
+src-tauri/target/
+server/target/
+
+# Tauri
+src-tauri/gen/
+
+# Local
+.env
+.env.local
+*.local

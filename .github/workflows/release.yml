@@ -1,0 +1,151 @@
+name: Release
+
+# Publishing a release is a single action: push a semver tag.
+#   git tag v1.2.3 && git push origin v1.2.3
+#
+# The workflow builds the Windows installer, signs the update bundle, writes
+# latest.json (what the in-app updater polls) and attaches everything to the
+# GitHub Release the installer scripts download from.
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  client:
+    name: Client installer (Windows)
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version from tag
+        id: version
+        shell: pwsh
+        run: |
+          # refs/tags/v1.2.3 -> 1.2.3
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          "value=$version" >> $env:GITHUB_OUTPUT
+          Write-Host "Building version $version"
+
+      - name: Sync version into manifests
+        shell: pwsh
+        run: |
+          # The tag is the single source of truth, so nothing can drift between
+          # package.json, tauri.conf.json and the Cargo manifests.
+          $version = "${{ steps.version.outputs.value }}"
+
+          $package = Get-Content package.json -Raw | ConvertFrom-Json
+          $package.version = $version
+          $package | ConvertTo-Json -Depth 32 | Set-Content package.json -Encoding utf8
+
+          $conf = Get-Content src-tauri/tauri.conf.json -Raw | ConvertFrom-Json
+          $conf.version = $version
+          $conf | ConvertTo-Json -Depth 32 | Set-Content src-tauri/tauri.conf.json -Encoding utf8
+
+          foreach ($manifest in @('src-tauri/Cargo.toml', 'server/Cargo.toml')) {
+            $content = Get-Content $manifest -Raw
+            # Only the first `version = "..."` (the [package] one) is replaced.
+            $content = [regex]::Replace($content, '(?m)^version = "[^"]*"', "version = `"$version`"", 1)
+            Set-Content $manifest $content -Encoding utf8
+          }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            src-tauri
+            server
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Generate icons
+        # Produces icon.ico / the PNG set that the NSIS installer embeds.
+        run: npm run icons
+
+      - name: Build, sign and publish
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Generate once with: npm run tauri signer generate -- -w key.pem
+          # Then store the private key and its password as repository secrets
+          # and put the matching public key in tauri.conf.json.
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: LibreOffice Collab ${{ steps.version.outputs.value }}
+          releaseBody: |
+            ## Instalação (Português)
+
+            1. Descarregue **instalar.bat** abaixo e faça duplo clique.
+            2. A aplicação instala-se sozinha e abre no fim.
+
+            Ou, numa janela do PowerShell:
+
+            ```powershell
+            irm https://raw.githubusercontent.com/${{ github.repository }}/main/scripts/install.ps1 | iex
+            ```
+
+            ## Installation (English)
+
+            1. Download **instalar.bat** below and double-click it.
+            2. The app installs itself and opens when it is done.
+
+            ---
+            Se já tem a aplicação instalada, ela atualiza-se sozinha. /
+            If you already have the app installed, it updates itself.
+          releaseDraft: false
+          prerelease: false
+          includeUpdaterJson: true
+
+  server:
+    name: Host server binary
+    runs-on: windows-latest
+    needs: client
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: server
+
+      - name: Sync version into the server manifest
+        shell: pwsh
+        working-directory: server
+        run: |
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          $content = Get-Content Cargo.toml -Raw
+          $content = [regex]::Replace($content, '(?m)^version = "[^"]*"', "version = `"$version`"", 1)
+          Set-Content Cargo.toml $content -Encoding utf8
+
+      - name: Build collab-server.exe
+        working-directory: server
+        run: cargo build --release
+
+      - name: Attach server binary and helper scripts to the release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # The host setup script downloads these three assets by name.
+          gh release upload "${{ github.ref_name }}" `
+            "server/target/release/collab-server.exe" `
+            "scripts/instalar.bat" `
+            "scripts/instalar-servidor.bat" `
+            --clobber

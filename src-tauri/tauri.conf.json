@@ -1,0 +1,80 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "LibreOffice Collab",
+  "version": "1.0.0",
+  "identifier": "com.libreofficecollab.app",
+
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "LibreOffice Collab",
+        "width": 1100,
+        "height": 740,
+        "minWidth": 720,
+        "minHeight": 520,
+        "center": true,
+        "resizable": true,
+        "focus": true,
+        "shadow": true,
+        "decorations": false,
+        "transparent": true,
+        "dragDropEnabled": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    },
+    "withGlobalTauri": false
+  },
+
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "publisher": "LibreOffice Collab",
+    "category": "Productivity",
+    "shortDescription": "Editar documentos LibreOffice em conjunto",
+    "longDescription": "Edicao colaborativa em tempo real de documentos LibreOffice na rede local, sem bloqueios de ficheiro.",
+    "copyright": "MIT",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "createUpdaterArtifacts": true,
+    "windows": {
+      "webviewInstallMode": { "type": "downloadBootstrapper" },
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": ["Portuguese", "English"],
+        "displayLanguageSelector": false,
+        "installerIcon": "icons/icon.ico",
+        "startMenuFolder": "LibreOffice Collab",
+        "compression": "lzma"
+      }
+    }
+  },
+
+  "plugins": {
+    "updater": {
+      "active": true,
+      "dialog": false,
+      "pubkey": "REPLACE_WITH_OUTPUT_OF__npm_run_tauri_signer_generate",
+      "endpoints": [
+        "https://github.com/your-org/libreoffice-collab/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}

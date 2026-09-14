@@ -1,0 +1,28 @@
+[package]
+name = "collab-server"
+version = "1.0.0"
+description = "WOPI host + mDNS advertiser that lets Collabora Online co-author a shared folder"
+edition = "2021"
+rust-version = "1.77"
+license = "MIT"
+
+[dependencies]
+axum = "0.7"
+tokio = { version = "1", features = ["full"] }
+tower = "0.4"
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Pinned to match the client: the ServiceEvent/ServiceInfo API changed later.
+mdns-sd = "=0.11.1"
+
+rand = "0.8"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+anyhow = "1"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
