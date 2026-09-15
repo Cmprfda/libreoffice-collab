@@ -191,19 +191,23 @@ if ($isAdmin) {
 
 Step $T.Autostart
 
+# One argument string, used for both the shortcut and the immediate launch.
+# The paths are quoted here because Start-Process does not quote -ArgumentList
+# entries for you: an unquoted "C:\Users\Public\Documentos Partilhados" reaches
+# the server as two arguments and it silently serves the wrong folder.
+$arguments = "--dir `"$DocsDir`" --port $Port --cool http://${hostIp}:9980 --name `"$Name`""
+
 $startup  = [Environment]::GetFolderPath('Startup')
 $shell    = New-Object -ComObject WScript.Shell
 $shortcut = $shell.CreateShortcut((Join-Path $startup 'LibreOffice Collab Server.lnk'))
 $shortcut.TargetPath       = $serverExe
-$shortcut.Arguments        = "--dir `"$DocsDir`" --port $Port --cool http://${hostIp}:9980 --name `"$Name`""
+$shortcut.Arguments        = $arguments
 $shortcut.WorkingDirectory = $installDir
 $shortcut.Description      = 'LibreOffice Collab Server'
 $shortcut.Save()
 
 # Start it now as well, so nobody has to reboot.
-Start-Process -FilePath $serverExe -ArgumentList @(
-    '--dir', $DocsDir, '--port', $Port, '--cool', "http://${hostIp}:9980", '--name', $Name
-)
+Start-Process -FilePath $serverExe -ArgumentList $arguments -WorkingDirectory $installDir
 
 Write-Host ''
 Write-Host "  $($T.Done)" -ForegroundColor Green
