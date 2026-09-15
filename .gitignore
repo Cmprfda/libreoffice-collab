@@ -22,3 +22,6 @@ src-tauri/gen/
 *.key
 *.key.password
 *.pem
+
+# Python
+__pycache__/

@@ -49,6 +49,10 @@ jobs:
         working-directory: server
         run: cargo clippy --all-targets -- -D warnings
 
+      - name: Check the Python host server
+        working-directory: server
+        run: python -m py_compile collab_server.py
+
       - name: Check Rust formatting
         run: |
           cargo fmt --manifest-path src-tauri/Cargo.toml --check

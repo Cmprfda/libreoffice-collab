@@ -107,6 +107,12 @@ jobs:
             ---
             Se já tem a aplicação instalada, ela atualiza-se sozinha. /
             If you already have the app installed, it updates itself.
+
+            **Servidor / Server:** `instalar-servidor.bat` (executável) ou
+            `servidor-python.bat` (um script Python, com página web para quem
+            não tem a aplicação). / `instalar-servidor.bat` (executable) or
+            `servidor-python.bat` (a Python script, with a web page for people
+            without the app).
           releaseDraft: false
           prerelease: false
           includeUpdaterJson: true
@@ -134,6 +140,15 @@ jobs:
           $content = [regex]::Replace($content, '(?m)^version = "[^"]*"', "version = `"$version`"", 1)
           Set-Content Cargo.toml $content -Encoding utf8
 
+          # The Python server reports the same version in /api/health.
+          $py = Get-Content collab_server.py -Raw
+          $py = [regex]::Replace($py, '(?m)^APP_VERSION = "[^"]*"', "APP_VERSION = `"$version`"", 1)
+          Set-Content collab_server.py $py -Encoding utf8
+
+      - name: Check the Python server compiles
+        working-directory: server
+        run: python -m py_compile collab_server.py
+
       - name: Build collab-server.exe
         working-directory: server
         run: cargo build --release
@@ -143,9 +158,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # The host setup script downloads these three assets by name.
+          # The host setup script downloads collab-server.exe by name; the
+          # Python launcher fetches collab_server.py from the main branch but
+          # is attached too so the pair can be downloaded together.
           gh release upload "${{ github.ref_name }}" `
             "server/target/release/collab-server.exe" `
+            "server/collab_server.py" `
             "scripts/instalar.bat" `
             "scripts/instalar-servidor.bat" `
+            "scripts/servidor-python.bat" `
             --clobber

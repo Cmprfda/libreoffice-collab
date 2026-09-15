@@ -112,8 +112,11 @@ try {
 Write-Host "  $($T.Found) $($release.tag_name)" -ForegroundColor Green
 
 # Prefer the NSIS setup executable; fall back to an MSI if one is published.
+# Match '-setup.exe' rather than any '.exe': the release also carries
+# collab-server.exe, and the API happens to list it first, so a looser match
+# downloads the server binary and the app is never installed.
 $asset = $release.assets |
-    Where-Object { $_.name -match '\.exe$' -and $_.name -notmatch 'debug' } |
+    Where-Object { $_.name -match '-setup\.exe$' -and $_.name -notmatch 'debug' } |
     Select-Object -First 1
 if (-not $asset) {
     $asset = $release.assets | Where-Object { $_.name -match '\.msi$' } | Select-Object -First 1

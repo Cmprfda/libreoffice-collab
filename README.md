@@ -89,6 +89,39 @@ O script trata de tudo:
 **Para partilhar um documento, basta copiá-lo para essa pasta.** Aparece
 imediatamente na aplicação de toda a gente.
 
+### Alternativa — correr só um script Python
+
+Se preferir não descarregar executáveis, ou se quiser que colegas **sem a
+aplicação instalada** abram os documentos no browser:
+
+1. Instale o **Docker Desktop** e abra-o (o motor Collabora continua a ser preciso).
+2. Descarregue **`servidor-python.bat`** das
+   [Releases](https://github.com/Cmprfda/libreoffice-collab/releases/latest)
+   e faça duplo clique. Instala o Python 3 se faltar (via winget, sem
+   administrador), descarrega o `collab_server.py` e arranca-o.
+
+   Se já tem Python: `python collab_server.py` faz o mesmo.
+
+O script arranca o Collabora, pede permissão **uma vez** para abrir a porta na
+firewall, cria a pasta partilhada e mostra na janela os dois endereços:
+
+```
+Neste PC:                 http://localhost:7373
+Outros PCs (mesma rede):  http://192.168.1.50:7373
+```
+
+**Qualquer colega na mesma rede abre o segundo endereço no browser**, escreve o
+nome e clica num documento — sem instalar nada. Também pode largar ficheiros
+nessa página para os partilhar. A aplicação de secretaria continua a funcionar
+com este servidor: aparece sozinha na lista (o `.bat` instala o `zeroconf`
+para isso) ou, se não aparecer, escreva o endereço em **Definições → Servidor**.
+
+Diferenças em relação ao `instalar-servidor.bat`: a janela tem de ficar aberta
+(feche-a para parar) e não fica configurado o arranque automático com o
+Windows — se quiser, crie um atalho para o `.bat` na pasta *Arranque*.
+`python collab_server.py --help` lista as opções (`--dir`, `--port`,
+`--no-docker`, `--no-firewall`, …).
+
 ---
 
 ## Parte 3 — Usar no dia a dia
@@ -216,6 +249,38 @@ Windows.
 **To share a document, copy it into that folder.** It appears in everyone's app
 straight away.
 
+### Alternative — just run a Python script
+
+If you would rather not download executables, or you want colleagues
+**without the app** to open documents in a browser:
+
+1. Install **Docker Desktop** and start it (the Collabora engine is still needed).
+2. Download **`servidor-python.bat`** from the
+   [Releases](https://github.com/Cmprfda/libreoffice-collab/releases/latest)
+   page and double-click it. It installs Python 3 if missing (via winget, no
+   admin rights), downloads `collab_server.py` and starts it.
+
+   Already have Python? `python collab_server.py` does the same.
+
+The script starts Collabora, asks **once** for permission to open the firewall
+port, creates the shared folder and prints both addresses in its window:
+
+```
+This PC:                    http://localhost:7373
+Other PCs (same network):   http://192.168.1.50:7373
+```
+
+**Anyone on the same network opens the second address in a browser**, types
+their name and clicks a document — nothing to install. They can also drop
+files onto that page to share them. The desktop app keeps working with this
+server: it shows up in the list on its own (the `.bat` installs `zeroconf` for
+that) or, failing that, type the address under **Settings → Server**.
+
+Compared with `instalar-servidor.bat`: the window has to stay open (close it to
+stop) and it is not registered to start with Windows — put a shortcut to the
+`.bat` in the *Startup* folder if you want that. `python collab_server.py
+--help` lists the options (`--dir`, `--port`, `--no-docker`, `--no-firewall`, …).
+
 ---
 
 ## Step 3 — Day-to-day use
@@ -304,6 +369,7 @@ have exactly one process own the document — that is what Collabora does, and
 | `src/i18n/pt.json` · `en.json` | Translation dictionaries — PT is the fallback |
 | `src-tauri/src/` | Rust client: settings, mDNS browser, updater, tray, editor windows |
 | `server/src/` | `collab-server`: REST API, WOPI host, mDNS advert |
+| `server/collab_server.py` | The same host in one stdlib-only Python file, plus a browser UI and Docker/firewall setup |
 | `docker/` | Collabora Online compose file |
 | `scripts/` | Installers and the icon generator |
 | `.github/workflows/` | CI and the tagged-release pipeline |
@@ -323,12 +389,21 @@ cargo run -- --dir ./documentos --port 7373 --cool http://localhost:9980
 docker compose -f docker/docker-compose.yml up -d   # needs HOST_IP in docker/.env
 ```
 
+No Rust toolchain for the host half? The Python server speaks the same API, so
+the client cannot tell them apart. It also starts Collabora and writes
+`docker/.env` for you:
+
+```bash
+python server/collab_server.py --dir ./documentos --port 7373
+```
+
 ## Before your first release
 
 1. **Point the project at your repository.** Replace `Cmprfda/libreoffice-collab`
    in: `src/lib/config.ts`, `src-tauri/src/github.rs`, `src-tauri/tauri.conf.json`
    (updater endpoint), `scripts/instalar.bat`, `scripts/install.ps1`,
-   `scripts/instalar-servidor.bat`, `scripts/host-setup.ps1`.
+   `scripts/instalar-servidor.bat`, `scripts/host-setup.ps1`,
+   `scripts/servidor-python.bat`, `server/collab_server.py`.
 
 2. **Create the update signing key.**
 
@@ -348,8 +423,8 @@ docker compose -f docker/docker-compose.yml up -d   # needs HOST_IP in docker/.e
 
    The workflow syncs the version into every manifest, builds the NSIS
    installer, signs the update bundle, writes `latest.json` and attaches
-   `collab-server.exe`, `instalar.bat` and `instalar-servidor.bat` to the
-   release.
+   `collab-server.exe`, `collab_server.py`, `instalar.bat`,
+   `instalar-servidor.bat` and `servidor-python.bat` to the release.
 
 ## Adding a translation string
 
